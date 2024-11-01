@@ -24,7 +24,7 @@ class GitAction:
 def sync_tree(root, dest, concurrency=1, disable_progress=False, recursive=False, use_fetch=False, hide_token=False, git_options=None, branch=None):
     if not disable_progress:
         progress.init_progress(len(root.leaves))
-    actions = get_git_actions(root, dest, recursive, use_fetch, hide_token)
+    actions = get_git_actions(root, dest, recursive, use_fetch, hide_token, git_options, branch)
     with concurrent.futures.ThreadPoolExecutor(max_workers=concurrency) as executor:
         executor.map(clone_or_pull_project, actions)
     
@@ -32,16 +32,16 @@ def sync_tree(root, dest, concurrency=1, disable_progress=False, recursive=False
     log.debug("Syncing projects took [%s]", elapsed)
 
 
-def get_git_actions(root, dest, recursive, use_fetch, hide_token):
+def get_git_actions(root, dest, recursive, use_fetch, hide_token, git_options, branch):
     actions = []
     for child in root.children:
         path = "%s%s" % (dest, child.root_path)
         if not os.path.exists(path):
             os.makedirs(path)
         if child.is_leaf:
-            actions.append(GitAction(child, path, recursive, use_fetch, hide_token))            
+            actions.append(GitAction(child, path, recursive, use_fetch, hide_token, git_options, branch))
         if not child.is_leaf:
-            actions.extend(get_git_actions(child, dest, recursive, use_fetch, hide_token))
+            actions.extend(get_git_actions(child, dest, recursive, use_fetch, hide_token, git_options, branch))
     return actions
 
 

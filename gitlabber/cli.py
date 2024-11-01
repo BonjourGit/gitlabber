@@ -232,7 +232,6 @@ def parse_args(argv=None):
     parser.add_argument(
         '-b',
         '--branch',
-        nargs=1,
         metavar=('branch'),
         help='checkout the branch')
     parser.add_argument(
