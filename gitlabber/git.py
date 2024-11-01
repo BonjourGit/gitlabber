@@ -69,14 +69,21 @@ def clone_or_pull_project(action):
                 repo.remotes.origin.fetch()
             if(action.recursive): 
                 repo.submodule_update(recursive=True)
-            if(action.branch):
-                log.debug("checking out branch %s", action.branch)
-                repo.git.checkout(action.branch)
         except KeyboardInterrupt:
             log.fatal("User interrupted")
             sys.exit(0)
         except Exception as e:
             log.error("Error pulling project %s", action.path, exc_info=True)
+
+        if(action.branch):
+            try:
+                log.debug("Checking out branch %s", action.branch)
+                repo.git.checkout(action.branch)
+            except KeyboardInterrupt:
+                log.fatal("User interrupted")
+                sys.exit(0)
+            except Exception as e:
+                log.error("Error checkout branch %s project %s", action.branch, action.path, exc_info=True)
     else:
         '''
         Clone new project
