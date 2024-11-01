@@ -220,7 +220,7 @@ class GitlabTree:
                   (len(self.root.descendants) - len(self.root.leaves), len(self.root.leaves)))
         sync_tree(self.root, dest, concurrency=self.concurrency,
                   disable_progress=self.disable_progress, recursive=self.recursive,
-                  use_fetch=self.use_fetch, hide_token=self.hide_token)
+                  use_fetch=self.use_fetch, hide_token=self.hide_token, branch=self.branch)
 
     def is_empty(self):
         return self.root.height < 1
