@@ -44,7 +44,7 @@ def main():
     tree = GitlabTree(args.url, args.token, args.method, args.naming, args.archived.api_value, includes,
                       excludes, args.file, args.concurrency, args.recursive, args.verbose,
                       args.include_shared, args.use_fetch, args.hide_token, args.user_projects, 
-                      group_search=args.group_search, git_options=args.git_options)
+                      group_search=args.group_search, git_options=args.git_options, branch=args.branch)
     tree.load_tree()
 
     if tree.is_empty():
@@ -229,6 +229,12 @@ def parse_args(argv=None):
         nargs=1,
         metavar=('options'),
         help='provide additional options as csv for the git command (e.g., --depth=1). See: clone/multi_options https://gitpython.readthedocs.io/en/stable/reference.html#')
+    parser.add_argument(
+        '-b',
+        '--branch',
+        nargs=1,
+        metavar=('branch'),
+        help='checkout the branch')
     parser.add_argument(
         '--version',
         action='store_true',

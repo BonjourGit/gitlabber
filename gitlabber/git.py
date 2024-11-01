@@ -12,15 +12,16 @@ progress = ProgressBar('* syncing projects')
 
 
 class GitAction:
-    def __init__(self, node, path, recursive=False, use_fetch=False, hide_token=False, git_options=None):
+    def __init__(self, node, path, recursive=False, use_fetch=False, hide_token=False, git_options=None, branch=None):
         self.node = node
         self.path = path
         self.recursive = recursive
         self.use_fetch = use_fetch
         self.hide_token = hide_token
         self.git_options = git_options
+        self.branch = branch
 
-def sync_tree(root, dest, concurrency=1, disable_progress=False, recursive=False, use_fetch=False, hide_token=False, git_options=None):
+def sync_tree(root, dest, concurrency=1, disable_progress=False, recursive=False, use_fetch=False, hide_token=False, git_options=None, branch=None):
     if not disable_progress:
         progress.init_progress(len(root.leaves))
     actions = get_git_actions(root, dest, recursive, use_fetch, hide_token)
@@ -68,6 +69,9 @@ def clone_or_pull_project(action):
                 repo.remotes.origin.fetch()
             if(action.recursive): 
                 repo.submodule_update(recursive=True)
+            if(action.branch):
+                log.debug("checking out branch %s", action.branch)
+                repo.git.checkout(action.branch)
         except KeyboardInterrupt:
             log.fatal("User interrupted")
             sys.exit(0)
